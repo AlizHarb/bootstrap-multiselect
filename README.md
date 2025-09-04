@@ -6,7 +6,7 @@
 **Advanced Select Component for Bootstrap 5**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Latest Version](https://img.shields.io/npm/v/@alizharb/bootstrap-multiselect.svg)]
+[![Latest Version](https://img.shields.io/npm/v/@alizharb/bootstrap-multiselect.svg)](https://www.npmjs.com/package/@alizharb/bootstrap-multiselect)
 [![Total Downloads](https://img.shields.io/npm/dm/@alizharb/bootstrap-multiselect.svg)](https://www.npmjs.com/package/@alizharb/bootstrap-multiselect)
 [![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3+-7952B3.svg)](https://getbootstrap.com/)
 [![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E.svg)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
