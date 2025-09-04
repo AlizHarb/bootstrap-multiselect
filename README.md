@@ -71,19 +71,19 @@ _Powerful, lightweight, and highly customizable select component with search, ta
 <script src="path/to/dist/js/azh-select.min.js"></script>
 ```
 
-#### Option 2: CDN (Coming Soon)
+#### Option 2: CDN
 
 ```html
 <!-- CSS -->
 <link
   rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/azh-select@1.0/dist/azh-select.min.css"
+  href="https://cdn.jsdelivr.net/npm/@alizharb/bootstrap-multiselect@1.0.3/dist/css/azh-select.min.css"
 />
 <!-- JavaScript -->
-<script src="https://cdn.jsdelivr.net/npm/azh-select@1.0/dist/azh-select.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@alizharb/bootstrap-multiselect@1.0.3/dist/js/azh-select.min.js"></script>
 ```
 
-#### Option 3: NPM (Coming Soon)
+#### Option 3: NPM
 
 ```bash
 npm install @alizharb/bootstrap-multiselect

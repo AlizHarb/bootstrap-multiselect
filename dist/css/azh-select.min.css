@@ -5,6 +5,71 @@
  * Author: Ali Harb
  * Repository: https://github.com/alizharb/bootstrap-multiselect
  * License: MIT
- * Version: 1.0.0
+ * Version: 1.0.3
  */
-.azh-select-wrapper{position:relative;width:100%}.azh-select-wrapper .azh-select-display{border:1px solid var(--bs-border-color,#dee2e6);border-radius:.375rem;background:var(--bs-body-bg,#fff);padding:.375rem .75rem;cursor:pointer;min-height:38px;display:flex;align-items:center;flex-wrap:wrap}.azh-select-wrapper .azh-select-display .azh-placeholder{color:#6c757d}.azh-select-wrapper .azh-select-dropdown{position:absolute;top:100%;left:0;right:0;z-index:1000;border:1px solid var(--bs-border-color,#dee2e6);border-radius:.375rem;background:var(--bs-body-bg,#fff);display:none;margin-top:2px;max-height:250px;overflow-y:auto}.azh-select-wrapper .azh-select-dropdown.open{display:block}.azh-select-wrapper .azh-select-dropdown .azh-select-search{border:none;border-bottom:1px solid var(--bs-border-color,#dee2e6);border-radius:0}.azh-select-wrapper .azh-select-dropdown .azh-option{padding:.375rem .75rem;cursor:pointer}.azh-select-wrapper .azh-select-dropdown .azh-option:hover{background:rgba(var(--bs-primary-rgb,13,110,253),.1)}.azh-select-wrapper .azh-select-dropdown .azh-option.selected{background:rgba(var(--bs-primary-rgb,13,110,253),.15);font-weight:500}.azh-select-wrapper .azh-select-dropdown .azh-option.disabled{color:#ccc;pointer-events:none}.azh-select-wrapper .azh-select-dropdown .azh-no-results{padding:.375rem .75rem;color:#6c757d;font-size:.875rem}.azh-select-wrapper .azh-select-dropdown .azh-clear{width:100%;text-align:center;padding:.25rem;border-top:1px solid var(--bs-border-color,#dee2e6)}
+.azh-select-wrapper {
+  position: relative;
+  width: 100%;
+}
+.azh-select-wrapper .azh-select-display {
+  border: 1px solid var(--bs-border-color, #dee2e6);
+  border-radius: 0.375rem;
+  background: var(--bs-body-bg, #fff);
+  padding: 0.375rem 0.75rem;
+  cursor: pointer;
+  min-height: 38px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.azh-select-wrapper .azh-select-display .azh-placeholder {
+  color: #6c757d;
+}
+.azh-select-wrapper .azh-select-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  border: 1px solid var(--bs-border-color, #dee2e6);
+  border-radius: 0.375rem;
+  background: var(--bs-body-bg, #fff);
+  display: none;
+  margin-top: 2px;
+  max-height: 250px;
+  overflow-y: auto;
+}
+.azh-select-wrapper .azh-select-dropdown.open {
+  display: block;
+}
+.azh-select-wrapper .azh-select-dropdown .azh-select-search {
+  border: none;
+  border-bottom: 1px solid var(--bs-border-color, #dee2e6);
+  border-radius: 0;
+}
+.azh-select-wrapper .azh-select-dropdown .azh-option {
+  padding: 0.375rem 0.75rem;
+  cursor: pointer;
+}
+.azh-select-wrapper .azh-select-dropdown .azh-option:hover {
+  background: rgba(var(--bs-primary-rgb, 13, 110, 253), 0.1);
+}
+.azh-select-wrapper .azh-select-dropdown .azh-option.selected {
+  background: rgba(var(--bs-primary-rgb, 13, 110, 253), 0.15);
+  font-weight: 500;
+}
+.azh-select-wrapper .azh-select-dropdown .azh-option.disabled {
+  color: #ccc;
+  pointer-events: none;
+}
+.azh-select-wrapper .azh-select-dropdown .azh-no-results {
+  padding: 0.375rem 0.75rem;
+  color: #6c757d;
+  font-size: 0.875rem;
+}
+.azh-select-wrapper .azh-select-dropdown .azh-clear {
+  width: 100%;
+  text-align: center;
+  padding: 0.25rem;
+  border-top: 1px solid var(--bs-border-color, #dee2e6);
+}
