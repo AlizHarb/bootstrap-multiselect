@@ -7,7 +7,7 @@
   "style": "dist/css/azh-select.min.css",
   "repository": {
     "type": "git",
-    "url": "https://github.com/alizharb/bootstrap-multiselect.git"
+    "url": "git+https://github.com/alizharb/bootstrap-multiselect.git"
   },
   "keywords": [
     "bootstrap",
