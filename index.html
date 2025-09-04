@@ -1,0 +1,2472 @@
+<!doctype html>
+<html lang="en" data-bs-theme="light">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>azh-select - Complete Documentation</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        /* Root CSS Variables for Theming */
+        :root {
+            --azh-radius: 0.375rem;
+            --azh-focus: var(--bs-primary, #0d6efd);
+            --azh-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            --azh-shadow-lg: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        }
+
+        /* Light Theme Variables */
+        [data-bs-theme="light"] {
+            --azh-bg: #ffffff;
+            --azh-border: #dee2e6;
+            --azh-text: #212529;
+            --azh-placeholder: #6c757d;
+            --azh-hover-bg: rgba(13, 110, 253, 0.1);
+            --azh-selected-bg: rgba(13, 110, 253, 0.15);
+            --azh-code-bg: #f8f9fa;
+            --azh-sidebar-bg: #f8f9fa;
+            --azh-card-bg: #ffffff;
+        }
+
+        /* Dark Theme Variables */
+        [data-bs-theme="dark"] {
+            --azh-bg: #212529;
+            --azh-border: #495057;
+            --azh-text: #f8f9fa;
+            --azh-placeholder: #adb5bd;
+            --azh-hover-bg: rgba(13, 110, 253, 0.25);
+            --azh-selected-bg: rgba(13, 110, 253, 0.35);
+            --azh-code-bg: #343a40;
+            --azh-sidebar-bg: #343a40;
+            --azh-card-bg: #2d3338;
+        }
+
+        /* AZH-Select Styles */
+        .azh-select-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .azh-select-wrapper .azh-select-display {
+            border: 1px solid var(--azh-border);
+            border-radius: var(--azh-radius);
+            background: var(--azh-bg);
+            padding: 0.375rem 0.75rem;
+            cursor: pointer;
+            min-height: 38px;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            color: var(--azh-text);
+            transition: all 0.15s ease-in-out;
+        }
+
+        .azh-select-wrapper .azh-select-display:focus {
+            border-color: var(--azh-focus);
+            outline: 0;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        }
+
+        .azh-select-wrapper .azh-select-display .azh-placeholder {
+            color: var(--azh-placeholder);
+        }
+
+        .azh-select-wrapper .azh-select-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            border: 1px solid var(--azh-border);
+            border-radius: var(--azh-radius);
+            background: var(--azh-bg);
+            display: none;
+            margin-top: 2px;
+            max-height: 250px;
+            overflow-y: auto;
+            box-shadow: var(--azh-shadow-lg);
+        }
+
+        .azh-select-wrapper .azh-select-dropdown.open {
+            display: block;
+        }
+
+        .azh-select-wrapper .azh-select-dropdown .azh-select-search {
+            border: none;
+            border-bottom: 1px solid var(--azh-border);
+            border-radius: 0;
+            background: var(--azh-bg);
+            color: var(--azh-text);
+            padding: 0.5rem 0.75rem;
+            width: 100%;
+        }
+
+        .azh-select-wrapper .azh-select-dropdown .azh-select-search::placeholder {
+            color: var(--azh-placeholder);
+        }
+
+        .azh-select-wrapper .azh-select-dropdown .azh-option {
+            padding: 0.5rem 0.75rem;
+            cursor: pointer;
+            color: var(--azh-text);
+            transition: background-color 0.15s ease-in-out;
+        }
+
+        .azh-select-wrapper .azh-select-dropdown .azh-option:hover {
+            background: var(--azh-hover-bg);
+        }
+
+        .azh-select-wrapper .azh-select-dropdown .azh-option.selected {
+            background: var(--azh-selected-bg);
+            font-weight: 500;
+        }
+
+        .azh-select-wrapper .azh-select-dropdown .azh-option.disabled {
+            color: var(--azh-placeholder);
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        .azh-select-wrapper .azh-select-dropdown .azh-no-results {
+            padding: 0.75rem;
+            color: var(--azh-placeholder);
+            font-size: 0.875rem;
+            text-align: center;
+        }
+
+        .azh-select-wrapper .azh-select-dropdown .azh-clear {
+            width: 100%;
+            text-align: center;
+            padding: 0.5rem;
+            border-top: 1px solid var(--azh-border);
+            background: none;
+            border: none;
+            border-top: 1px solid var(--azh-border);
+            color: var(--azh-text);
+            cursor: pointer;
+        }
+
+        /* General Styles */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            background: var(--bs-body-bg);
+            color: var(--bs-body-color);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Header */
+        .header {
+            background: var(--azh-card-bg);
+            border-bottom: 1px solid var(--azh-border);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1030;
+            box-shadow: var(--azh-shadow);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: var(--azh-sidebar-bg);
+            border-right: 1px solid var(--azh-border);
+            height: calc(100vh - 80px);
+            position: sticky;
+            top: 80px;
+            overflow-y: auto;
+        }
+
+        .nav-pills .nav-link {
+            color: var(--azh-text);
+            border-radius: 0.25rem;
+            margin-bottom: 0.25rem;
+            padding: 0.5rem 1rem;
+            transition: all 0.15s ease-in-out;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .nav-pills .nav-link:hover {
+            background-color: var(--azh-hover-bg);
+        }
+
+        .nav-pills .nav-link.active {
+            background-color: var(--bs-primary);
+            color: white;
+        }
+
+        /* Content Area */
+        .content {
+            padding: 2rem 0;
+            min-height: calc(100vh - 80px);
+        }
+
+        /* Cards */
+        .example-card {
+            background: var(--azh-card-bg);
+            border: 1px solid var(--azh-border);
+            border-radius: var(--azh-radius);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--azh-shadow);
+        }
+
+        /* Code Blocks */
+        pre {
+            background: var(--azh-code-bg);
+            border: 1px solid var(--azh-border);
+            border-radius: var(--azh-radius);
+            padding: 1rem;
+            overflow-x: auto;
+            font-size: 0.875rem;
+            line-height: 1.4;
+            color: var(--azh-text);
+            margin: 1rem 0;
+        }
+
+        code {
+            background: var(--azh-code-bg);
+            color: var(--azh-text);
+            padding: 0.125rem 0.25rem;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+        }
+
+        /* Tables */
+        .table {
+            --bs-table-bg: var(--azh-card-bg);
+            --bs-table-color: var(--azh-text);
+            --bs-table-border-color: var(--azh-border);
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+        }
+
+        /* Badges */
+        .feature-badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 991.98px) {
+            .sidebar {
+                position: static;
+                height: auto;
+                border-right: none;
+                border-bottom: 1px solid var(--azh-border);
+            }
+
+            .content {
+                padding: 1rem 0;
+            }
+
+            .example-card {
+                padding: 1rem;
+                margin-bottom: 1rem;
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .nav-pills {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+
+            .nav-pills .nav-link {
+                margin-bottom: 0;
+                font-size: 0.8rem;
+                padding: 0.375rem 0.75rem;
+            }
+        }
+
+        /* Utilities */
+        .text-muted-custom {
+            color: var(--azh-placeholder) !important;
+        }
+
+        .border-custom {
+            border-color: var(--azh-border) !important;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--azh-sidebar-bg);
+            border-top: 1px solid var(--azh-border);
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+
+        /* Animation */
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+<!-- Theme Toggle -->
+<div class="theme-toggle">
+    <div class="btn-group" role="group">
+        <button type="button" class="btn btn-outline-primary btn-sm" id="lightTheme">
+            <i class="bi bi-sun"></i>
+        </button>
+        <button type="button" class="btn btn-outline-primary btn-sm" id="darkTheme">
+            <i class="bi bi-moon"></i>
+        </button>
+    </div>
+</div>
+
+<!-- Header -->
+<header class="header">
+    <div class="container-fluid">
+        <div class="row align-items-center">
+            <div class="col">
+                <h1 class="mb-0">azh-select <span class="badge bg-primary ms-2">v1.0</span></h1>
+                <p class="mb-0 text-muted-custom">Advanced Select Component with Search, Tags, Remote API & More</p>
+            </div>
+            <div class="col-auto d-none d-md-block">
+                <div class="d-flex gap-2">
+                    <span class="feature-badge badge bg-success">Bootstrap 5</span>
+                    <span class="feature-badge badge bg-info">Dark Mode</span>
+                    <span class="feature-badge badge bg-warning">Remote API</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-lg-3 col-xl-2 px-0">
+            <nav class="sidebar p-3">
+                <div class="nav flex-column nav-pills" id="nav-tab" role="tablist">
+                    <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#overview" type="button">
+                        <i class="bi bi-house me-2"></i>Overview
+                    </button>
+                    <button class="nav-link" data-bs-toggle="pill" data-bs-target="#installation" type="button">
+                        <i class="bi bi-download me-2"></i>Installation
+                    </button>
+                    <button class="nav-link" data-bs-toggle="pill" data-bs-target="#quick-start" type="button">
+                        <i class="bi bi-play me-2"></i>Quick Start
+                    </button>
+                    <button class="nav-link" data-bs-toggle="pill" data-bs-target="#examples" type="button">
+                        <i class="bi bi-code-square me-2"></i>Examples
+                    </button>
+                    <button class="nav-link" data-bs-toggle="pill" data-bs-target="#configuration" type="button">
+                        <i class="bi bi-gear me-2"></i>Configuration
+                    </button>
+                    <button class="nav-link" data-bs-toggle="pill" data-bs-target="#api-reference" type="button">
+                        <i class="bi bi-book me-2"></i>API Reference
+                    </button>
+                    <button class="nav-link" data-bs-toggle="pill" data-bs-target="#events" type="button">
+                        <i class="bi bi-broadcast me-2"></i>Events
+                    </button>
+                    <button class="nav-link" data-bs-toggle="pill" data-bs-target="#templates" type="button">
+                        <i class="bi bi-palette me-2"></i>Templates
+                    </button>
+                    <button class="nav-link" data-bs-toggle="pill" data-bs-target="#remote-api" type="button">
+                        <i class="bi bi-cloud me-2"></i>Remote API
+                    </button>
+                    <button class="nav-link" data-bs-toggle="pill" data-bs-target="#themes" type="button">
+                        <i class="bi bi-brush me-2"></i>Themes
+                    </button>
+                    <button class="nav-link" data-bs-toggle="pill" data-bs-target="#advanced" type="button">
+                        <i class="bi bi-cpu me-2"></i>Advanced
+                    </button>
+                    <button class="nav-link" data-bs-toggle="pill" data-bs-target="#troubleshooting" type="button">
+                        <i class="bi bi-tools me-2"></i>Troubleshooting
+                    </button>
+                </div>
+            </nav>
+        </div>
+
+        <!-- Content -->
+        <div class="col-lg-9 col-xl-10">
+            <div class="content">
+                <div class="tab-content" id="nav-tabContent">
+
+                    <!-- Overview -->
+                    <div class="tab-pane fade show active" id="overview">
+                        <div class="container-fluid fade-in">
+                            <h2>Overview</h2>
+                            <p class="lead">azh-select is a powerful, lightweight, and highly customizable select component built for Bootstrap 5. It provides advanced features like search, tags, remote API loading, custom templates, and full dark mode support.</p>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="example-card">
+                                        <h4>Basic Template Example</h4>
+                                        <p>Add icons and styling to your options:</p>
+                                        <div class="mb-3">
+                                            <select class="form-select azh-select" id="iconSelect" data-placeholder="Choose a language">
+                                                <option value="js" data-icon="bi-code-slash" data-color="warning">JavaScript</option>
+                                                <option value="python" data-icon="bi-terminal" data-color="success">Python</option>
+                                                <option value="php" data-icon="bi-braces" data-color="primary">PHP</option>
+                                                <option value="ruby" data-icon="bi-gem" data-color="danger">Ruby</option>
+                                            </select>
+                                        </div>
+                                        <pre><code>const select = azhSelect.get('#iconSelect');
+select.options.templateOption = (opt) => {
+    const icon = document.querySelector(`option[value="${opt.value}"]`).dataset.icon;
+    const color = document.querySelector(`option[value="${opt.value}"]`).dataset.color;
+    return `&lt;i class="bi ${icon} text-${color} me-2">&lt;/i>${opt.label}`;
+};
+select.options.templateValue = (opt) => {
+    const color = document.querySelector(`option[value="${opt.value}"]`).dataset.color;
+    return `&lt;span class="badge bg-${color}">${opt.label}&lt;/span>`;
+};</code></pre>
+                                    </div>
+
+                                    <div class="example-card">
+                                        <h4>Advanced Template Example</h4>
+                                        <p>Rich content with images, descriptions, and formatting:</p>
+                                        <div class="mb-3">
+                                            <select class="form-select azh-select" id="richSelect" multiple data-search="true" data-placeholder="Select team members">
+                                                <option value="john" data-avatar="https://ui-avatars.com/api/?name=John+Doe&background=0d6efd&color=fff" data-role="Developer" data-email="john@example.com">John Doe</option>
+                                                <option value="jane" data-avatar="https://ui-avatars.com/api/?name=Jane+Smith&background=198754&color=fff" data-role="Designer" data-email="jane@example.com">Jane Smith</option>
+                                                <option value="mike" data-avatar="https://ui-avatars.com/api/?name=Mike+Johnson&background=dc3545&color=fff" data-role="Manager" data-email="mike@example.com">Mike Johnson</option>
+                                            </select>
+                                        </div>
+                                        <pre><code>const richSelect = azhSelect.get('#richSelect');
+richSelect.options.templateOption = (opt) => {
+    const option = document.querySelector(`option[value="${opt.value}"]`);
+    const avatar = option.dataset.avatar;
+    const role = option.dataset.role;
+    const email = option.dataset.email;
+
+    return `
+        &lt;div class="d-flex align-items-center"&gt;
+            &lt;img src="${avatar}" class="rounded-circle me-3" width="32" height="32"&gt;
+            &lt;div&gt;
+                &lt;div class="fw-semibold"&gt;${opt.label}&lt;/div&gt;
+                &lt;small class="text-muted"&gt;${role} • ${email}&lt;/small&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    `;
+};
+
+richSelect.options.templateValue = (opt) => {
+    return `&lt;span class="badge bg-light text-dark me-1"&gt;${opt.label}&lt;/span&gt;`;
+};</code></pre>
+                                    </div>
+
+                                    <div class="example-card">
+                                        <h4>Template Best Practices</h4>
+                                        <ul>
+                                            <li><strong>Keep it simple:</strong> Avoid overly complex HTML in templates</li>
+                                            <li><strong>Use Bootstrap classes:</strong> Leverage Bootstrap's utility classes for consistent styling</li>
+                                            <li><strong>Handle missing data:</strong> Always check if data attributes exist before using them</li>
+                                            <li><strong>Escape HTML:</strong> If displaying user input, ensure it's properly escaped</li>
+                                            <li><strong>Performance:</strong> Keep templates lightweight for large datasets</li>
+                                            <li><strong>Accessibility:</strong> Ensure templates remain accessible with proper ARIA attributes</li>
+                                        </ul>
+
+                                        <h5>Safe Template Example</h5>
+                                        <pre><code>templateOption: (opt) => {
+    // Safely get data attributes
+    const option = document.querySelector(`option[value="${CSS.escape(opt.value)}"]`);
+    const icon = option?.dataset.icon || 'bi-circle';
+    const color = option?.dataset.color || 'secondary';
+
+    // Escape HTML content
+    const safeLabel = opt.label.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+    return `&lt;i class="bi ${icon} text-${color} me-2">&lt;/i>${safeLabel}`;
+}</code></pre>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="example-card">
+                                        <h4><i class="bi bi-check-circle-fill text-success me-2"></i>Key Features</h4>
+                                        <ul class="list-unstyled">
+                                            <li><i class="bi bi-check text-success me-2"></i>Single and multiple selection</li>
+                                            <li><i class="bi bi-check text-success me-2"></i>Real-time search and filtering</li>
+                                            <li><i class="bi bi-check text-success me-2"></i>Tag creation (user-generated options)</li>
+                                            <li><i class="bi bi-check text-success me-2"></i>Remote API data loading</li>
+                                            <li><i class="bi bi-check text-success me-2"></i>Custom HTML templates</li>
+                                            <li><i class="bi bi-check text-success me-2"></i>Bootstrap 5 dark/light theme support</li>
+                                            <li><i class="bi bi-check text-success me-2"></i>Fully responsive design</li>
+                                            <li><i class="bi bi-check text-success me-2"></i>Rich event system</li>
+                                            <li><i class="bi bi-check text-success me-2"></i>Keyboard accessibility</li>
+                                            <li><i class="bi bi-check text-success me-2"></i>No dependencies (except Bootstrap 5)</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="example-card">
+                                        <h4><i class="bi bi-info-circle-fill text-info me-2"></i>Browser Support</h4>
+                                        <div class="table-responsive">
+                                            <table class="table table-sm">
+                                                <thead>
+                                                <tr>
+                                                    <th>Browser</th>
+                                                    <th>Version</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr><td>Chrome</td><td>60+</td></tr>
+                                                <tr><td>Firefox</td><td>55+</td></tr>
+                                                <tr><td>Safari</td><td>12+</td></tr>
+                                                <tr><td>Edge</td><td>79+</td></tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="example-card">
+                                <h4>Quick Demo</h4>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Basic Select</label>
+                                        <select class="form-select azh-select" data-placeholder="Choose an option">
+                                            <option value="">Select...</option>
+                                            <option value="option1">Option 1</option>
+                                            <option value="option2">Option 2</option>
+                                            <option value="option3">Option 3</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Searchable Multi-Select</label>
+                                        <select class="form-select azh-select" multiple data-search="true" data-tags="true" data-placeholder="Type to search or create">
+                                            <option value="html">HTML</option>
+                                            <option value="css">CSS</option>
+                                            <option value="js">JavaScript</option>
+                                            <option value="php">PHP</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Installation -->
+                    <div class="tab-pane fade" id="installation">
+                        <div class="container-fluid fade-in">
+                            <h2>Installation</h2>
+                            <p>azh-select can be installed and used in multiple ways depending on your project setup.</p>
+
+                            <div class="example-card">
+                                <h4><i class="bi bi-download me-2"></i>1. Direct Download</h4>
+                                <p>Download the files and include them in your project:</p>
+                                <pre><code>&lt;!-- CSS --&gt;
+&lt;link rel="stylesheet" href="path/to/dist/css/azh-select.min.css"&gt;
+
+&lt;!-- JavaScript --&gt;
+&lt;script src="path/to/dist/js/azh-select.min.js"&gt;&lt;/script&gt;</code></pre>
+                            </div>
+
+                            <div class="example-card">
+                                <h4><i class="bi bi-cloud me-2"></i>2. CDN (Coming Soon)</h4>
+                                <pre><code>&lt;!-- CSS --&gt;
+&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/azh-select@1.0/dist/azh-select.min.css"&gt;
+
+&lt;!-- JavaScript --&gt;
+&lt;script src="https://cdn.jsdelivr.net/npm/azh-select@1.0/dist/azh-select.min.js"&gt;&lt;/script&gt;</code></pre>
+                            </div>
+
+                            <div class="example-card">
+                                <h4><i class="bi bi-box me-2"></i>3. NPM (Coming Soon)</h4>
+                                <pre><code>npm install azh-select</code></pre>
+                                <p>Then import in your JavaScript:</p>
+                                <pre><code>import 'azh-select/dist/css/azh-select.min.css';
+import azhSelect from 'azh-select';</code></pre>
+                            </div>
+
+                            <div class="example-card">
+                                <h4><i class="bi bi-exclamation-triangle me-2 text-warning"></i>Requirements</h4>
+                                <ul>
+                                    <li><strong>Bootstrap 5.0+</strong> - Required for styling and theme support</li>
+                                    <li><strong>Modern Browser</strong> - ES6+ support needed</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Start -->
+                    <div class="tab-pane fade" id="quick-start">
+                        <div class="container-fluid fade-in">
+                            <h2>Quick Start</h2>
+                            <p>Get up and running with azh-select in just a few steps.</p>
+
+                            <div class="example-card">
+                                <h4>Step 1: Include Bootstrap 5</h4>
+                                <pre><code>&lt;!-- Bootstrap CSS --&gt;
+&lt;link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"&gt;
+
+&lt;!-- Bootstrap JS (Optional for other Bootstrap components) --&gt;
+&lt;script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"&gt;&lt;/script&gt;</code></pre>
+                            </div>
+
+                            <div class="example-card">
+                                <h4>Step 2: Include azh-select</h4>
+                                <pre><code>&lt;!-- azh-select CSS --&gt;
+&lt;link rel="stylesheet" href="azh-select.css"&gt;
+
+&lt;!-- azh-select JavaScript --&gt;
+&lt;script src="azh-select.js"&gt;&lt;/script&gt;</code></pre>
+                            </div>
+
+                            <div class="example-card">
+                                <h4>Step 3: Create HTML</h4>
+                                <pre><code>&lt;select class="form-select azh-select" data-placeholder="Choose an option"&gt;
+    &lt;option value=""&gt;--&lt;/option&gt;
+    &lt;option value="1"&gt;Option 1&lt;/option&gt;
+    &lt;option value="2"&gt;Option 2&lt;/option&gt;
+    &lt;option value="3"&gt;Option 3&lt;/option&gt;
+&lt;/select&gt;</code></pre>
+                            </div>
+
+                            <div class="example-card">
+                                <h4>Step 4: Initialize</h4>
+                                <pre><code>&lt;script&gt;
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize all elements with azh-select class
+    azhSelect.init('.azh-select');
+
+    // Or initialize specific element with options
+    azhSelect.init('#mySelect', {
+        search: true,
+        clear: true
+    });
+});
+&lt;/script&gt;</code></pre>
+                            </div>
+
+                            <div class="example-card">
+                                <h4>Complete Example</h4>
+                                <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;meta charset="utf-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+    &lt;title&gt;azh-select Example&lt;/title&gt;
+    &lt;link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"&gt;
+    &lt;link rel="stylesheet" href="azh-select.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class="container mt-5"&gt;
+        &lt;select class="form-select azh-select" data-search="true" data-placeholder="Search options..."&gt;
+            &lt;option value="apple"&gt;Apple&lt;/option&gt;
+            &lt;option value="banana"&gt;Banana&lt;/option&gt;
+            &lt;option value="cherry"&gt;Cherry&lt;/option&gt;
+        &lt;/select&gt;
+    &lt;/div&gt;
+
+    &lt;script src="azh-select.js"&gt;&lt;/script&gt;
+    &lt;script&gt;
+        document.addEventListener('DOMContentLoaded', () =&gt; {
+            azhSelect.init('.azh-select');
+        });
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Examples -->
+                    <div class="tab-pane fade" id="examples">
+                        <div class="container-fluid fade-in">
+                            <h2>Live Examples</h2>
+                            <p>Interactive examples demonstrating various features and configurations.</p>
+
+                            <div class="example-card">
+                                <h4>Basic Single Select</h4>
+                                <p>Simple dropdown with placeholder text.</p>
+                                <div class="mb-3">
+                                    <select class="form-select azh-select" id="basicSelect" data-placeholder="Select an option">
+                                        <option value="">--</option>
+                                        <option value="1">Option One</option>
+                                        <option value="2">Option Two</option>
+                                        <option value="3">Option Three</option>
+                                        <option value="4">Option Four</option>
+                                    </select>
+                                </div>
+                                <pre><code>&lt;select class="form-select azh-select" data-placeholder="Select an option"&gt;
+    &lt;option value=""&gt;--&lt;/option&gt;
+    &lt;option value="1"&gt;Option One&lt;/option&gt;
+    &lt;option value="2"&gt;Option Two&lt;/option&gt;
+&lt;/select&gt;</code></pre>
+                            </div>
+
+                            <div class="example-card">
+                                <h4>Multiple Selection</h4>
+                                <p>Allow users to select multiple options using the <code>multiple</code> attribute.</p>
+                                <div class="mb-3">
+                                    <select class="form-select azh-select" multiple data-placeholder="Select multiple options">
+                                        <option value="apple">🍎 Apple</option>
+                                        <option value="banana">🍌 Banana</option>
+                                        <option value="cherry">🍒 Cherry</option>
+                                        <option value="mango">🥭 Mango</option>
+                                        <option value="orange">🍊 Orange</option>
+                                    </select>
+                                </div>
+                                <pre><code>&lt;select class="form-select azh-select" multiple data-placeholder="Select multiple options"&gt;
+    &lt;option value="apple"&gt;🍎 Apple&lt;/option&gt;
+    &lt;option value="banana"&gt;🍌 Banana&lt;/option&gt;
+&lt;/select&gt;</code></pre>
+                            </div>
+
+                            <div class="example-card">
+                                <h4>Searchable Select</h4>
+                                <p>Enable search functionality with <code>data-search="true"</code>.</p>
+                                <div class="mb-3">
+                                    <select class="form-select azh-select" data-search="true" data-placeholder="Search countries...">
+                                        <option value="us">United States</option>
+                                        <option value="uk">United Kingdom</option>
+                                        <option value="ca">Canada</option>
+                                        <option value="au">Australia</option>
+                                        <option value="de">Germany</option>
+                                        <option value="fr">France</option>
+                                        <option value="jp">Japan</option>
+                                    </select>
+                                </div>
+                                <pre><code>&lt;select class="form-select azh-select" data-search="true" data-placeholder="Search countries..."&gt;
+    &lt;option value="us"&gt;United States&lt;/option&gt;
+    &lt;option value="uk"&gt;United Kingdom&lt;/option&gt;
+&lt;/select&gt;</code></pre>
+                            </div>
+
+                            <div class="example-card">
+                                <h4>Clear Button</h4>
+                                <p>Add a clear button to reset selections with <code>data-clear="true"</code>.</p>
+                                <div class="mb-3">
+                                    <select class="form-select azh-select" data-clear="true" data-placeholder="Select with clear option">
+                                        <option value="dog">🐶 Dog</option>
+                                        <option value="cat">🐱 Cat</option>
+                                        <option value="hamster">🐹 Hamster</option>
+                                        <option value="rabbit">🐰 Rabbit</option>
+                                    </select>
+                                </div>
+                                <pre><code>&lt;select class="form-select azh-select" data-clear="true" data-placeholder="Select with clear option"&gt;
+    &lt;option value="dog"&gt;🐶 Dog&lt;/option&gt;
+    &lt;option value="cat"&gt;🐱 Cat&lt;/option&gt;
+&lt;/select&gt;</code></pre>
+                            </div>
+
+                            <div class="example-card">
+                                <h4>Tags / Creatable Options</h4>
+                                <p>Allow users to create new options by typing with <code>data-tags="true"</code>.</p>
+                                <div class="mb-3">
+                                    <select class="form-select azh-select" multiple data-search="true" data-tags="true" data-placeholder="Type to add new skills">
+                                        <option value="html">HTML</option>
+                                        <option value="css">CSS</option>
+                                        <option value="javascript">JavaScript</option>
+                                        <option value="php">PHP</option>
+                                    </select>
+                                </div>
+                                <pre><code>&lt;select class="form-select azh-select" multiple data-search="true" data-tags="true" data-placeholder="Type to add new skills"&gt;
+    &lt;option value="html"&gt;HTML&lt;/option&gt;
+    &lt;option value="css"&gt;CSS&lt;/option&gt;
+&lt;/select&gt;</code></pre>
+                            </div>
+
+                            <div class="example-card">
+                                <h4>Disabled Options</h4>
+                                <p>Some options can be disabled using the <code>disabled</code> attribute.</p>
+                                <div class="mb-3">
+                                    <select class="form-select azh-select" data-search="true" data-placeholder="Choose a plan">
+                                        <option value="free">Free Plan</option>
+                                        <option value="basic">Basic Plan - $9/month</option>
+                                        <option value="pro">Pro Plan - $19/month</option>
+                                        <option value="enterprise" disabled>Enterprise - Contact Sales</option>
+                                    </select>
+                                </div>
+                                <pre><code>&lt;select class="form-select azh-select" data-search="true" data-placeholder="Choose a plan"&gt;
+    &lt;option value="free"&gt;Free Plan&lt;/option&gt;
+    &lt;option value="basic"&gt;Basic Plan - $9/month&lt;/option&gt;
+    &lt;option value="enterprise" disabled&gt;Enterprise - Contact Sales&lt;/option&gt;
+&lt;/select&gt;</code></pre>
+                            </div>
+
+                            <div class="example-card">
+                                <h4>Pre-selected Options</h4>
+                                <p>Options can be pre-selected using the <code>selected</code> attribute.</p>
+                                <div class="mb-3">
+                                    <select class="form-select azh-select" multiple data-placeholder="Technologies you know">
+                                        <option value="html" selected>HTML</option>
+                                        <option value="css" selected>CSS</option>
+                                        <option value="js">JavaScript</option>
+                                        <option value="react">React</option>
+                                        <option value="vue">Vue.js</option>
+                                    </select>
+                                </div>
+                                <pre><code>&lt;select class="form-select azh-select" multiple data-placeholder="Technologies you know"&gt;
+    &lt;option value="html" selected&gt;HTML&lt;/option&gt;
+    &lt;option value="css" selected&gt;CSS&lt;/option&gt;
+    &lt;option value="js"&gt;JavaScript&lt;/option&gt;
+&lt;/select&gt;</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Configuration -->
+                    <div class="tab-pane fade" id="configuration">
+                        <div class="container-fluid fade-in">
+                            <h2>Configuration Options</h2>
+                            <p>Complete list of all configuration options available through data attributes or JavaScript options.</p>
+
+                            <div class="example-card">
+                                <h4>Data Attributes</h4>
+                                <p>Configure azh-select using HTML data attributes on the select element.</p>
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th>Attribute</th>
+                                            <th>Type</th>
+                                            <th>Default</th>
+                                            <th>Description</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td><code>data-search</code></td>
+                                            <td>Boolean</td>
+                                            <td><code>false</code></td>
+                                            <td>Enable search input for filtering options</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>data-clear</code></td>
+                                            <td>Boolean</td>
+                                            <td><code>false</code></td>
+                                            <td>Show clear button to reset selection</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>data-tags</code></td>
+                                            <td>Boolean</td>
+                                            <td><code>false</code></td>
+                                            <td>Allow creating new options by typing</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>data-remote</code></td>
+                                            <td>Boolean</td>
+                                            <td><code>false</code></td>
+                                            <td>Enable remote data loading from API</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>data-endpoint</code></td>
+                                            <td>String</td>
+                                            <td><code>null</code></td>
+                                            <td>API endpoint URL for remote data</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>data-value-field</code></td>
+                                            <td>String</td>
+                                            <td><code>"id"</code></td>
+                                            <td>Field name for option values in remote data</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>data-label-field</code></td>
+                                            <td>String</td>
+                                            <td><code>"name"</code></td>
+                                            <td>Field name for option labels in remote data</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>data-placeholder</code></td>
+                                            <td>String</td>
+                                            <td><code>"Select..."</code></td>
+                                            <td>Placeholder text when no option is selected</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>data-max</code></td>
+                                            <td>Number</td>
+                                            <td><code>null</code></td>
+                                            <td>Maximum number of selectable options (multi-select only)</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>data-min-query</code></td>
+                                            <td>Number</td>
+                                            <td><code>1</code></td>
+                                            <td>Minimum characters to trigger remote search</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>data-delay</code></td>
+                                            <td>Number</td>
+                                            <td><code>300</code></td>
+                                            <td>Delay in milliseconds before remote search</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>data-preload</code></td>
+                                            <td>Boolean</td>
+                                            <td><code>false</code></td>
+                                            <td>Load remote data immediately on initialization</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>data-bs-theme</code></td>
+                                            <td>String</td>
+                                            <td><code>"light"</code></td>
+                                            <td>Bootstrap theme: "light" or "dark"</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="example-card">
+                                <h4>JavaScript Options</h4>
+                                <p>Advanced options that can only be set via JavaScript initialization.</p>
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th>Option</th>
+                                            <th>Type</th>
+                                            <th>Default</th>
+                                            <th>Description</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td><code>templateOption</code></td>
+                                            <td>Function</td>
+                                            <td><code>(opt) => opt.label</code></td>
+                                            <td>Custom HTML template for dropdown options</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>templateValue</code></td>
+                                            <td>Function</td>
+                                            <td><code>(opt) => opt.label</code></td>
+                                            <td>Custom HTML template for selected values</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>i18n</code></td>
+                                            <td>Object</td>
+                                            <td>See below</td>
+                                            <td>Internationalization strings</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <h5>Default i18n Object</h5>
+                                <pre><code>i18n: {
+    placeholder: "Select...",
+    clear: "Clear",
+    noResults: "No results found"
+}</code></pre>
+                            </div>
+
+                            <div class="example-card">
+                                <h4>Configuration Examples</h4>
+
+                                <h5>HTML Data Attributes</h5>
+                                <pre><code>&lt;select class="form-select azh-select"
+        data-search="true"
+        data-clear="true"
+        data-tags="true"
+        data-placeholder="Search or create tags..."
+        data-max="5"&gt;
+    &lt;option value="tag1"&gt;Tag 1&lt;/option&gt;
+&lt;/select&gt;</code></pre>
+
+                                <h5>JavaScript Options</h5>
+                                <pre><code>azhSelect.init('.my-select', {
+    search: true,
+    clear: true,
+    tags: true,
+    placeholder: "Choose options...",
+    max: 3,
+    templateOption: (opt) => `&lt;i class="bi bi-tag"&gt;&lt;/i&gt; ${opt.label}`,
+    templateValue: (opt) => `&lt;span class="badge bg-primary"&gt;${opt.label}&lt;/span&gt;`,
+    i18n: {
+        placeholder: "Seleccionar...",
+        clear: "Limpiar",
+        noResults: "Sin resultados"
+    }
+});</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- API Reference -->
+                    <div class="tab-pane fade" id="api-reference">
+                        <div class="container-fluid fade-in">
+                            <h2>API Reference</h2>
+                            <p>Complete JavaScript API for programmatic control of azh-select instances.</p>
+
+                            <div class="example-card">
+                                <h4>Global API Methods</h4>
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th>Method</th>
+                                            <th>Parameters</th>
+                                            <th>Returns</th>
+                                            <th>Description</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td><code>azhSelect.init()</code></td>
+                                            <td><code>selector, options</code></td>
+                                            <td>void</td>
+                                            <td>Initialize select elements matching the selector</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>azhSelect.get()</code></td>
+                                            <td><code>selector</code></td>
+                                            <td>Instance</td>
+                                            <td>Get the first instance matching the selector</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>azhSelect.destroy()</code></td>
+                                            <td><code>selector</code></td>
+                                            <td>void</td>
+                                            <td>Destroy instance matching the selector</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>azhSelect.destroyAll()</code></td>
+                                            <td>none</td>
+                                            <td>void</td>
+                                            <td>Destroy all instances</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <h5>Examples</h5>
+                                <pre><code>// Initialize all selects with azh-select class
+azhSelect.init('.azh-select');
+
+// Initialize specific select with options
+azhSelect.init('#mySelect', { search: true, clear: true });
+
+// Get instance for manipulation
+const instance = azhSelect.get('#mySelect');
+
+// Destroy specific instance
+azhSelect.destroy('#mySelect');
+
+// Destroy all instances
+azhSelect.destroyAll();</code></pre>
+                            </div>
+
+                            <div class="example-card">
+                                <h4>Instance Methods</h4>
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th>Method</th>
+                                            <th>Parameters</th>
+                                            <th>Returns</th>
+                                            <th>Description</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td><code>clear()</code></td>
+                                            <td>none</td>
+                                            <td>void</td>
+                                            <td>Clear all selections</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>open()</code></td>
+                                            <td>none</td>
+                                            <td>void</td>
+                                            <td>Open the dropdown</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>close()</code></td>
+                                            <td>none</td>
+                                            <td>void</td>
+                                            <td>Close the dropdown</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>toggle()</code></td>
+                                            <td>none</td>
+                                            <td>void</td>
+                                            <td>Toggle dropdown open/close state</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>destroy()</code></td>
+                                            <td>none</td>
+                                            <td>void</td>
+                                            <td>Destroy this instance and restore original select</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <h5>Examples</h5>
+                                <pre><code>const select = azhSelect.get('#mySelect');
+
+// Clear all selections
+select.clear();
+
+// Programmatically open dropdown
+select.open();
+
+// Close dropdown
+select.close();
+
+// Toggle dropdown
+select.toggle();
+
+// Destroy instance
+select.destroy();</code></pre>
+                            </div>
+
+                            <div class="example-card">
+                                <h4>Instance Properties</h4>
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th>Property</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td><code>el</code></td>
+                                            <td>HTMLElement</td>
+                                            <td>Original select element</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>wrapper</code></td>
+                                            <td>HTMLElement</td>
+                                            <td>Main wrapper element</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>display</code></td>
+                                            <td>HTMLElement</td>
+                                            <td>Display/trigger element</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>dropdown</code></td>
+                                            <td>HTMLElement</td>
+                                            <td>Dropdown container element</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>isOpen</code></td>
+                                            <td>Boolean</td>
+                                            <td>Current open/closed state</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>isMultiple</code></td>
+                                            <td>Boolean</td>
+                                            <td>Whether multiple selection is enabled</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>optionsData</code></td>
+                                            <td>Array</td>
+                                            <td>Parsed options data</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>filteredOptions</code></td>
+                                            <td>Array</td>
+                                            <td>Currently filtered/visible options</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <h5>Examples</h5>
+                                <pre><code>const select = azhSelect.get('#mySelect');
+
+// Access original select element
+console.log(select.el);
+
+// Check if dropdown is open
+if (select.isOpen) {
+    console.log('Dropdown is open');
+}
+
+// Get all options data
+console.log(select.optionsData);
+
+// Get currently visible options
+console.log(select.filteredOptions);</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Events -->
+                    <div class="tab-pane fade" id="events">
+                        <div class="container-fluid fade-in">
+                            <h2>Events</h2>
+                            <p>azh-select triggers custom events that allow you to respond to user interactions and state changes.</p>
+
+                            <div class="example-card">
+                                <h4>Event List</h4>
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th>Event</th>
+                                            <th>Trigger</th>
+                                            <th>Detail Object</th>
+                                            <th>Description</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td><code>azh:change</code></td>
+                                            <td>Selection changes</td>
+                                            <td><code>{ instance }</code></td>
+                                            <td>Fired when user selects/deselects options</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>azh:clear</code></td>
+                                            <td>Clear button clicked</td>
+                                            <td><code>{ instance }</code></td>
+                                            <td>Fired when clear button is clicked</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>azh:open</code></td>
+                                            <td>Dropdown opens</td>
+                                            <td><code>{ instance }</code></td>
+                                            <td>Fired when dropdown is opened</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>azh:close</code></td>
+                                            <td>Dropdown closes</td>
+                                            <td><code>{ instance }</code></td>
+                                            <td>Fired when dropdown is closed</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>azh:optionCreated</code></td>
+                                            <td>New tag created</td>
+                                            <td><code>{ instance, value }</code></td>
+                                            <td>Fired when user creates new option (tags mode)</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>azh:remoteLoaded</code></td>
+                                            <td>Remote data loaded</td>
+                                            <td><code>{ instance, query, options }</code></td>
+                                            <td>Fired when remote API data is loaded</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>azh:error</code></td>
+                                            <td>Remote API error</td>
+                                            <td><code>{ instance, error }</code></td>
+                                            <td>Fired when remote API request fails</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>azh:afterRender</code></td>
+                                            <td>After options render</td>
+                                            <td><code>{ instance }</code></td>
+                                            <td>Fired after options list is rendered</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>azh:destroy</code></td>
+                                            <td>Instance destroyed</td>
+                                            <td><code>{ instance }</code></td>
+                                            <td>Fired when instance is destroyed</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="example-card">
+                                <h4>Event Usage Examples</h4>
+
+                                <h5>Basic Event Listening</h5>
+                                <pre><code>document.querySelector('#mySelect').addEventListener('azh:change', function(e) {
+    console.log('Selection changed:', e.detail.instance);
+    console.log('Selected values:', e.target.value);
+});
+
+document.querySelector('#mySelect').addEventListener('azh:open', function(e) {
+    console.log('Dropdown opened');
+});
+
+document.querySelector('#mySelect').addEventListener('azh:close', function(e) {
+    console.log('Dropdown closed');
+});</code></pre>
+
+                                <h5>Tag Creation Event</h5>
+                                <pre><code>document.querySelector('#tagsSelect').addEventListener('azh:optionCreated', function(e) {
+    const newValue = e.detail.value;
+    console.log(`New tag created: ${newValue}`);
+
+    // You could save the new tag to your database here
+    fetch('/api/tags', {
+        method: 'POST',
+        body: JSON.stringify({ name: newValue }),
+        headers: { 'Content-Type': 'application/json' }
+    });
+});</code></pre>
+
+                                <h5>Remote Data Events</h5>
+                                <pre><code>const remoteSelect = document.querySelector('#remoteSelect');
+
+remoteSelect.addEventListener('azh:remoteLoaded', function(e) {
+    const { query, options } = e.detail;
+    console.log(`Loaded ${options.length} options for query: ${query}`);
+});
+
+remoteSelect.addEventListener('azh:error', function(e) {
+    const error = e.detail.error;
+    console.error('Failed to load remote data:', error);
+    alert('Failed to load data. Please try again.');
+});</code></pre>
+
+                                <h5>Form Validation Integration</h5>
+                                <pre><code>document.querySelector('#requiredSelect').addEventListener('azh:change', function(e) {
+    const select = e.target;
+    const errorElement = select.parentNode.querySelector('.error-message');
+
+    if (select.value) {
+        // Valid selection
+        select.classList.remove('is-invalid');
+        select.classList.add('is-valid');
+        if (errorElement) errorElement.style.display = 'none';
+    } else {
+        // No selection
+        select.classList.remove('is-valid');
+        select.classList.add('is-invalid');
+        if (errorElement) errorElement.style.display = 'block';
+    }
+});</code></pre>
+
+                                <h5>Multiple Event Handlers</h5>
+                                <pre><code>const select = document.querySelector('#mySelect');
+
+// Track interactions for analytics
+['azh:open', 'azh:close', 'azh:change'].forEach(eventType => {
+    select.addEventListener(eventType, function(e) {
+        // Send analytics event
+        gtag('event', 'select_interaction', {
+            'event_category': 'UI',
+            'event_label': eventType,
+            'select_id': e.target.id
+        });
+    });
+});</code></pre>
+                            </div>
+
+                            <div class="example-card">
+                                <h4>Live Event Demo</h4>
+                                <p>Try interacting with this select to see events in action:</p>
+                                <div class="mb-3">
+                                    <select class="form-select azh-select" id="eventDemo" data-search="true" data-clear="true" data-tags="true" multiple data-placeholder="Try me - events will log below">
+                                        <option value="option1">Option 1</option>
+                                        <option value="option2">Option 2</option>
+                                        <option value="option3">Option 3</option>
+                                    </select>
+                                </div>
+                                <div id="eventLog" class="p-3 border rounded" style="height: 200px; overflow-y: auto; font-family: monospace; font-size: 0.875rem; background: var(--azh-code-bg);">
+                                    <div class="text-muted">Event log will appear here...</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Templates -->
+                    <div class="tab-pane fade" id="templates">
+                        <div class="container-fluid fade-in">
+                            <h2>Custom Templates</h2>
+                            <p>Customize the appearance of options and selected values using template functions.</p>
+
+                            <div class="example-card">
+                                <h4>Template Functions</h4>
+                                <p>Templates are JavaScript functions that return HTML strings for rendering options and values.</p>
+
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th>Template</th>
+                                            <th>Purpose</th>
+                                            <th>Parameters</th>
+                                            <th>Default</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td><code>templateOption</code></td>
+                                            <td>Dropdown option rendering</td>
+                                            <td><code>{ value, label, selected, disabled }</code></td>
+                                            <td><code>(opt) => opt.label</code></td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>templateValue</code></td>
+                                            <td>Selected value display</td>
+                                            <td><code>{ value, label, selected }</code></td>
+                                            <td><code>(opt) => opt.label</code></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="example-card">
+                                <h4>Basic Template Usage</h4>
+                                <p>Set templates during initialization:</p>
+                                <pre><code>azhSelect.init('#mySelect', {
+    templateOption: (opt) => {
+        return `&lt;i class="bi bi-star text-warning me-2"&gt;&lt;/i&gt;${opt.label}`;
+    },
+    templateValue: (opt) => {
+        return `&lt;span class="badge bg-primary"&gt;${opt.label}&lt;/span&gt;`;
+    }
+});</code></pre>
+                            </div>
+
+                            <div class="example-card">
+                                <h4>Icon Templates Example</h4>
+                                <p>Add icons and colors to your options:</p>
+                                <div class="mb-3">
+                                    <select class="form-select azh-select" id="iconTemplate" data-placeholder="Choose a programming language">
+                                        <option value="javascript" data-icon="bi-braces" data-color="warning">JavaScript</option>
+                                        <option value="python" data-icon="bi-code-slash" data-color="success">Python</option>
+                                        <option value="php" data-icon="bi-code" data-color="primary">PHP</option>
+                                        <option value="ruby" data-icon="bi-gem" data-color="danger">Ruby</option>
+                                    </select>
+                                </div>
+                                <pre><code>azhSelect.init('#iconTemplate', {
+    templateOption: (opt) => {
+        const option = document.querySelector(`option[value="${opt.value}"]`);
+        const icon = option?.dataset.icon || 'bi-circle';
+        const color = option?.dataset.color || 'secondary';
+        return `&lt;i class="bi ${icon} text-${color} me-2"&gt;&lt;/i&gt;${opt.label}`;
+    },
+    templateValue: (opt) => {
+        const option = document.querySelector(`option[value="${opt.value}"]`);
+        const color = option?.dataset.color || 'primary';
+        return `&lt;span class="badge bg-${color}"&gt;${opt.label}&lt;/span&gt;`;
+    }
+});</code></pre>
+                            </div>
+
+                            <div class="example-card">
+                                <h4>User Profile Templates</h4>
+                                <p>Rich templates with avatars and metadata:</p>
+                                <div class="mb-3">
+                                    <select class="form-select azh-select" id="userTemplate" multiple data-search="true" data-placeholder="Select team members">
+                                        <option value="john" data-avatar="https://ui-avatars.com/api/?name=John+Doe&background=0d6efd&color=fff" data-role="Developer" data-email="john@company.com">John Doe</option>
+                                        <option value="jane" data-avatar="https://ui-avatars.com/api/?name=Jane+Smith&background=198754&color=fff" data-role="Designer" data-email="jane@company.com">Jane Smith</option>
+                                        <option value="mike" data-avatar="https://ui-avatars.com/api/?name=Mike+Johnson&background=dc3545&color=fff" data-role="Manager" data-email="mike@company.com">Mike Johnson</option>
+                                        <option value="sara" data-avatar="https://ui-avatars.com/api/?name=Sara+Wilson&background=6f42c1&color=fff" data-role="QA Engineer" data-email="sara@company.com">Sara Wilson</option>
+                                    </select>
+                                </div>
+                                <pre><code>azhSelect.init('#userTemplate', {
+    templateOption: (opt) => {
+        const option = document.querySelector(`option[value="${opt.value}"]`);
+        const avatar = option?.dataset.avatar || '';
+        const role = option?.dataset.role || '';
+        const email = option?.dataset.email || '';
+
+        return `
+            &lt;div class="d-flex align-items-center py-1"&gt;
+                &lt;img src="${avatar}" class="rounded-circle me-3" width="32" height="32" alt="${opt.label}"&gt;
+                &lt;div&gt;
+                    &lt;div class="fw-semibold"&gt;${opt.label}&lt;/div&gt;
+                    &lt;small class="text-muted"&gt;${role} • ${email}&lt;/small&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        `;
+    },
+    templateValue: (opt) => {
+        return `&lt;span class="badge bg-light text-dark me-1 mb-1"&gt;${opt.label}&lt;/span&gt;`;
+    }
+});</code></pre>
+                            </div>
+
+                            <div class="example-card">
+                                <h4>Template Best Practices</h4>
+                                <ul>
+                                    <li><strong>Performance:</strong> Keep templates simple for large datasets</li>
+                                    <li><strong>Accessibility:</strong> Include proper alt attributes for images</li>
+                                    <li><strong>Responsive:</strong> Use Bootstrap classes for mobile-friendly designs</li>
+                                    <li><strong>Safety:</strong> Escape user-generated content to prevent XSS</li>
+                                    <li><strong>Consistency:</strong> Maintain visual consistency with your design system</li>
+                                </ul>
+
+                                <h5>Safe HTML Escaping</h5>
+                                <pre><code>function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+templateOption: (opt) => {
+    const safeLabel = escapeHtml(opt.label);
+    return `&lt;i class="bi bi-tag me-2"&gt;&lt;/i&gt;${safeLabel}`;
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Remote API -->
+                    <div class="tab-pane fade" id="remote-api">
+                        <div class="container-fluid fade-in">
+                            <h2>Remote API Integration</h2>
+                            <p>Load options dynamically from server endpoints with search functionality.</p>
+
+                            <div class="example-card">
+                                <h4>Basic Remote Setup</h4>
+                                <p>Enable remote data loading with minimal configuration:</p>
+                                <pre><code>&lt;select class="form-select azh-select"
+        data-remote="true"
+        data-endpoint="https://api.example.com/users"
+        data-search="true"
+        data-placeholder="Search users..."&gt;
+&lt;/select&gt;</code></pre>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Live Demo - JSONPlaceholder API</label>
+                                    <select class="form-select azh-select" id="remoteSelect"
+                                            data-remote="true"
+                                            data-endpoint="https://jsonplaceholder.typicode.com/users"
+                                            data-search="true"
+                                            data-value-field="id"
+                                            data-label-field="name"
+                                            data-preload="true"
+                                            data-placeholder="Search users...">
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="example-card">
+                                <h4>API Configuration</h4>
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th>Attribute</th>
+                                            <th>Description</th>
+                                            <th>Example</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td><code>data-endpoint</code></td>
+                                            <td>API endpoint URL</td>
+                                            <td><code>/api/users</code></td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>data-value-field</code></td>
+                                            <td>Field name for option values</td>
+                                            <td><code>id</code>, <code>user_id</code></td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>data-label-field</code></td>
+                                            <td>Field name for option labels</td>
+                                            <td><code>name</code>, <code>title</code>, <code>username</code></td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>data-min-query</code></td>
+                                            <td>Minimum characters to trigger search</td>
+                                            <td><code>2</code>, <code>3</code></td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>data-delay</code></td>
+                                            <td>Debounce delay in milliseconds</td>
+                                            <td><code>300</code>, <code>500</code></td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>data-preload</code></td>
+                                            <td>Load data on initialization</td>
+                                            <td><code>true</code>, <code>false</code></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="example-card">
+                                <h4>Expected API Response Format</h4>
+                                <p>Your API should return a JSON array of objects:</p>
+                                <pre><code>[
+    {
+        "id": 1,
+        "name": "John Doe",
+        "email": "john@example.com",
+        "role": "Admin"
+    },
+    {
+        "id": 2,
+        "name": "Jane Smith",
+        "email": "jane@example.com",
+        "role": "User"
+    }
+]</code></pre>
+
+                                <h5>Field Mapping</h5>
+                                <ul>
+                                    <li><code>data-value-field="id"</code> → Uses the <code>id</code> field for option values</li>
+                                    <li><code>data-label-field="name"</code> → Uses the <code>name</code> field for option labels</li>
+                                    <li>If fields don't exist, fallbacks are: <code>id</code>, <code>name</code>, <code>title</code>, then the value itself</li>
+                                </ul>
+                            </div>
+
+                            <div class="example-card">
+                                <h4>Search Query Parameters</h4>
+                                <p>When search is enabled, queries are sent as URL parameters:</p>
+                                <pre><code>GET /api/users?q=john</code></pre>
+
+                                <h5>Server-side Implementation Examples</h5>
+
+                                <h6>PHP (Laravel)</h6>
+                                <pre><code>Route::get('/api/users', function (Request $request) {
+    $query = $request->get('q');
+
+    return User::when($query, function ($q) use ($query) {
+        return $q->where('name', 'LIKE', "%{$query}%")
+                ->orWhere('email', 'LIKE', "%{$query}%");
+    })
+    ->select('id', 'name', 'email', 'role')
+    ->limit(50)
+    ->get();
+});</code></pre>
+
+                                <h6>Node.js (Express)</h6>
+                                <pre><code>app.get('/api/users', (req, res) => {
+    const query = req.query.q;
+
+    let sql = 'SELECT id, name, email, role FROM users';
+    let params = [];
+
+    if (query) {
+        sql += ' WHERE name LIKE ? OR email LIKE ?';
+        params = [`%${query}%`, `%${query}%`];
+    }
+
+    sql += ' LIMIT 50';
+
+    db.query(sql, params, (err, results) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(results);
+    });
+});</code></pre>
+
+                                <h6>Python (Django)</h6>
+                                <pre><code>from django.http import JsonResponse
+from django.db.models import Q
+
+def users_api(request):
+    query = request.GET.get('q', '')
+
+    users = User.objects.all()
+
+    if query:
+        users = users.filter(
+            Q(name__icontains=query) |
+            Q(email__icontains=query)
+        )
+
+    users = users.values('id', 'name', 'email', 'role')[:50]
+
+    return JsonResponse(list(users), safe=False)</code></pre>
+                            </div>
+
+                            <div class="example-card">
+                                <h4>Advanced Remote Features</h4>
+
+                                <h5>Error Handling</h5>
+                                <pre><code>document.querySelector('#remoteSelect').addEventListener('azh:error', function(e) {
+    console.error('API Error:', e.detail.error);
+
+    // Show user-friendly message
+    const dropdown = e.detail.instance.dropdown;
+    dropdown.innerHTML = `
+        &lt;div class="p-3 text-center text-danger"&gt;
+            &lt;i class="bi bi-exclamation-triangle"&gt;&lt;/i&gt;
+            Failed to load data. Please try again.
+        &lt;/div&gt;
+    `;
+});</code></pre>
+
+                                <h5>Custom Request Headers</h5>
+                                <p>For APIs requiring authentication, you'll need to extend the fetch method:</p>
+                                <pre><code>// Override the _fetchRemote method for custom headers
+const select = azhSelect.get('#remoteSelect');
+const originalFetch = select._fetchRemote.bind(select);
+
+select._fetchRemote = function(query = '') {
+    if (!this.options.endpoint) return;
+
+    let url = this.options.endpoint;
+    if (query) url += (url.includes("?") ? "&" : "?") + "q=" + encodeURIComponent(query);
+
+    fetch(url, {
+        headers: {
+            'Authorization': 'Bearer ' + authToken,
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        // Process data same as original method
+        // ... (rest of original implementation)
+    });
+};</code></pre>
+
+                                <h5>Caching Results</h5>
+                                <pre><code>// Simple cache implementation
+const cache = new Map();
+
+select._fetchRemote = function(query = '') {
+    const cacheKey = `${this.options.endpoint}?q=${query}`;
+
+    if (cache.has(cacheKey)) {
+        // Use cached data
+        const data = cache.get(cacheKey);
+        this._processRemoteData(data, query);
+        return;
+    }
+
+    // Fetch from API and cache result
+    fetch(url)
+        .then(res => res.json())
+        .then(data => {
+            cache.set(cacheKey, data);
+            this._processRemoteData(data, query);
+        });
+};</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Themes -->
+                    <div class="tab-pane fade" id="themes">
+                        <div class="container-fluid fade-in">
+                            <h2>Themes & Styling</h2>
+                            <p>azh-select fully supports Bootstrap 5's theme system with automatic dark/light mode switching.</p>
+
+                            <div class="example-card">
+                                <h4>Bootstrap Theme Integration</h4>
+                                <p>azh-select automatically detects and applies the appropriate theme based on Bootstrap's <code>data-bs-theme</code> attribute.</p>
+
+                                <h5>Global Theme</h5>
+                                <pre><code>&lt;html data-bs-theme="dark"&gt;
+&lt;!-- All azh-select instances will use dark theme --&gt;</code></pre>
+
+                                <h5>Individual Theme</h5>
+                                <pre><code>&lt;select class="form-select azh-select" data-bs-theme="dark" data-placeholder="Dark themed select"&gt;
+    &lt;option value="1"&gt;Option 1&lt;/option&gt;
+&lt;/select&gt;</code></pre>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Light Theme</label>
+                                        <select class="form-select azh-select" data-bs-theme="light" data-search="true" data-placeholder="Light theme example">
+                                            <option value="1">Light Option 1</option>
+                                            <option value="2">Light Option 2</option>
+                                            <option value="3">Light Option 3</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Dark Theme</label>
+                                        <select class="form-select azh-select" data-bs-theme="dark" data-search="true" data-placeholder="Dark theme example">
+                                            <option value="1">Dark Option 1</option>
+                                            <option value="2">Dark Option 2</option>
+                                            <option value="3">Dark Option 3</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="example-card">
+                                <h4>CSS Variables</h4>
+                                <p>azh-select uses CSS custom properties for easy customization:</p>
+
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th>Variable</th>
+                                            <th>Light Default</th>
+                                            <th>Dark Default</th>
+                                            <th>Description</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td><code>--azh-bg</code></td>
+                                            <td>#ffffff</td>
+                                            <td>#212529</td>
+                                            <td>Background color</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>--azh-border</code></td>
+                                            <td>#dee2e6</td>
+                                            <td>#495057</td>
+                                            <td>Border color</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>--azh-text</code></td>
+                                            <td>#212529</td>
+                                            <td>#f8f9fa</td>
+                                            <td>Text color</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>--azh-placeholder</code></td>
+                                            <td>#6c757d</td>
+                                            <td>#adb5bd</td>
+                                            <td>Placeholder text color</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>--azh-hover-bg</code></td>
+                                            <td>rgba(13, 110, 253, 0.1)</td>
+                                            <td>rgba(13, 110, 253, 0.25)</td>
+                                            <td>Hover background</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>--azh-selected-bg</code></td>
+                                            <td>rgba(13, 110, 253, 0.15)</td>
+                                            <td>rgba(13, 110, 253, 0.35)</td>
+                                            <td>Selected option background</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="example-card">
+                                <h4>Custom Styling</h4>
+                                <p>Override CSS variables to create custom themes:</p>
+
+                                <h5>Custom Color Scheme</h5>
+                                <pre><code>.my-custom-select {
+    --azh-bg: #f0f8ff;
+    --azh-border: #4682b4;
+    --azh-text: #1e3a8a;
+    --azh-placeholder: #64748b;
+    --azh-hover-bg: rgba(70, 130, 180, 0.1);
+    --azh-selected-bg: rgba(70, 130, 180, 0.2);
+}</code></pre>
+
+                                <h5>Size Variations</h5>
+                                <pre><code>/* Small select */
+.azh-select-sm .azh-select-display {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    min-height: 30px;
+}
+
+/* Large select */
+.azh-select-lg .azh-select-display {
+    padding: 0.5rem 1rem;
+    font-size: 1.125rem;
+    min-height: 48px;
+}</code></pre>
+
+                                <h5>Rounded Corners</h5>
+                                <pre><code>/* More rounded */
+.azh-select-rounded {
+    --azh-radius: 1rem;
+}
+
+/* No rounded corners */
+.azh-select-square {
+    --azh-radius: 0;
+}</code></pre>
+                            </div>
+
+                            <div class="example-card">
+                                <h4>Dynamic Theme Switching</h4>
+                                <p>Implement theme switching with JavaScript:</p>
+
+                                <pre><code>// Theme switcher function
+function toggleTheme() {
+    const html = document.documentElement;
+    const currentTheme = html.getAttribute('data-bs-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+    html.setAttribute('data-bs-theme', newTheme);
+
+    // Optional: Save preference
+    localStorage.setItem('theme', newTheme);
+}
+
+// Load saved theme on page load
+document.addEventListener('DOMContentLoaded', () => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+        document.documentElement.setAttribute('data-bs-theme', savedTheme);
+    }
+});</code></pre>
+
+                                <div class="text-center">
+                                    <button class="btn btn-primary" onclick="toggleDocTheme()">
+                                        <i class="bi bi-palette me-2"></i>Toggle Theme Demo
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Advanced -->
+                    <div class="tab-pane fade" id="advanced">
+                        <div class="container-fluid fade-in">
+                            <h2>Advanced Usage</h2>
+                            <p>Advanced techniques and patterns for complex use cases.</p>
+
+                            <div class="example-card">
+                                <h4>Form Integration</h4>
+                                <p>azh-select works seamlessly with forms and validation libraries:</p>
+
+                                <h5>Basic Form</h5>
+                                <div class="mb-3">
+                                    <form id="demoForm" class="needs-validation" novalidate>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label class="form-label">Required Select</label>
+                                                <select class="form-select azh-select" name="category" required data-placeholder="Choose category">
+                                                    <option value="">Select...</option>
+                                                    <option value="tech">Technology</option>
+                                                    <option value="design">Design</option>
+                                                    <option value="marketing">Marketing</option>
+                                                </select>
+                                                <div class="invalid-feedback">Please select a category.</div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label">Tags (Optional)</label>
+                                                <select class="form-select azh-select" name="tags[]" multiple data-search="true" data-tags="true" data-placeholder="Add tags">
+                                                    <option value="urgent">Urgent</option>
+                                                    <option value="featured">Featured</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary mt-3">Submit</button>
+                                    </form>
+                                </div>
+
+                                <pre><code>&lt;form class="needs-validation" novalidate&gt;
+    &lt;select class="form-select azh-select" name="category" required&gt;
+        &lt;option value=""&gt;Select...&lt;/option&gt;
+        &lt;option value="tech"&gt;Technology&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;div class="invalid-feedback"&gt;Please select a category.&lt;/div&gt;
+&lt;/form&gt;
+
+&lt;script&gt;
+// Bootstrap validation
+document.querySelector('form').addEventListener('submit', function(e) {
+    if (!this.checkValidity()) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+    this.classList.add('was-validated');
+});
+&lt;/script&gt;</code></pre>
+                            </div>
+
+                            <div class="example-card">
+                                <h4>Performance Optimization</h4>
+
+                                <h5>Virtual Scrolling (Large Datasets)</h5>
+                                <p>For very large datasets, consider implementing virtual scrolling:</p>
+                                <pre><code>// Custom implementation for 10,000+ options
+class VirtualAzhSelect extends AzhSelect {
+    constructor(element, options = {}) {
+        super(element, options);
+        this.virtualOptions = {
+            itemHeight: 40,
+            visibleCount: 10,
+            scrollOffset: 0
+        };
+    }
+
+    _renderVirtual() {
+        const { itemHeight, visibleCount } = this.virtualOptions;
+        const startIndex = Math.floor(this.scrollOffset / itemHeight);
+        const endIndex = Math.min(startIndex + visibleCount, this.filteredOptions.length);
+
+        // Render only visible items
+        this.list.innerHTML = '';
+        for (let i = startIndex; i < endIndex; i++) {
+            const option = this.filteredOptions[i];
+            // Render option...
+        }
+    }
+}</code></pre>
+
+                                <h5>Debounced Search</h5>
+                                <p>Already built-in, but you can customize the delay:</p>
+                                <pre><code>&lt;select class="azh-select"
+        data-remote="true"
+        data-delay="500"
+        data-min-query="3"&gt;
+&lt;/select&gt;</code></pre>
+
+                                <h5>Memory Management</h5>
+                                <pre><code>// Clean up when removing from DOM
+function removeSelect(selector) {
+    const instance = azhSelect.get(selector);
+    if (instance) {
+        instance.destroy(); // Removes event listeners and DOM elements
+    }
+}
+
+// Clean up all instances when leaving page
+window.addEventListener('beforeunload', () => {
+    azhSelect.destroyAll();
+});</code></pre>
+                            </div>
+
+                            <div class="example-card">
+                                <h4>Integration with Popular Libraries</h4>
+
+                                <h5>React Integration</h5>
+                                <pre><code>import React, { useEffect, useRef } from 'react';
+import azhSelect from 'azh-select';
+
+function AzhSelectComponent({ options, value, onChange, ...props }) {
+    const selectRef = useRef();
+    const instanceRef = useRef();
+
+    useEffect(() => {
+        // Initialize
+        azhSelect.init(selectRef.current, props);
+        instanceRef.current = azhSelect.get(selectRef.current);
+
+        // Listen for changes
+        selectRef.current.addEventListener('azh:change', onChange);
+
+        // Cleanup
+        return () => instanceRef.current?.destroy();
+    }, []);
+
+    useEffect(() => {
+        // Update value
+        if (instanceRef.current && value !== selectRef.current.value) {
+            selectRef.current.value = value;
+            instanceRef.current._render();
+        }
+    }, [value]);
+
+    return (
+        &lt;select ref={selectRef} className="form-select azh-select"&gt;
+            {options.map(opt =>
+                &lt;option key={opt.value} value={opt.value}&gt;{opt.label}&lt;/option&gt;
+            )}
+        &lt;/select&gt;
+    );
+}</code></pre>
+
+                                <h5>Vue.js Integration</h5>
+                                <pre><code>&lt;template&gt;
+  &lt;select ref="select" class="form-select azh-select" v-model="value"&gt;
+    &lt;option v-for="option in options" :key="option.value" :value="option.value"&gt;
+      {{ option.label }}
+    &lt;/option&gt;
+  &lt;/select&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+import azhSelect from 'azh-select';
+
+export default {
+  props: ['options', 'value'],
+  mounted() {
+    azhSelect.init(this.$refs.select, this.$attrs);
+    this.$refs.select.addEventListener('azh:change', () => {
+      this.$emit('input', this.$refs.select.value);
+    });
+  },
+  beforeDestroy() {
+    const instance = azhSelect.get(this.$refs.select);
+    instance?.destroy();
+  }
+};
+&lt;/script&gt;</code></pre>
+                            </div>
+
+                            <div class="example-card">
+                                <h4>Accessibility Enhancements</h4>
+
+                                <h5>ARIA Attributes</h5>
+                                <pre><code>// Add ARIA support
+const select = azhSelect.get('#mySelect');
+select.display.setAttribute('role', 'combobox');
+select.display.setAttribute('aria-expanded', 'false');
+select.display.setAttribute('aria-haspopup', 'listbox');
+select.list.setAttribute('role', 'listbox');
+
+// Update on state changes
+select.el.addEventListener('azh:open', () => {
+    select.display.setAttribute('aria-expanded', 'true');
+});
+select.el.addEventListener('azh:close', () => {
+    select.display.setAttribute('aria-expanded', 'false');
+});</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Troubleshooting -->
+                    <div class="tab-pane fade" id="troubleshooting">
+                        <div class="container-fluid fade-in">
+                            <h2>Troubleshooting</h2>
+                            <p>Common issues and solutions for azh-select implementation.</p>
+
+                            <div class="example-card">
+                                <h4>Common Issues</h4>
+
+                                <h5>Select Not Initializing</h5>
+                                <div class="alert alert-warning">
+                                    <strong>Problem:</strong> azh-select doesn't transform the select element.
+                                </div>
+                                <div class="alert alert-success">
+                                    <strong>Solutions:</strong>
+                                    <ul class="mb-0">
+                                        <li>Ensure the element has <code>azh-select</code> class</li>
+                                        <li>Check that JavaScript is loaded after the DOM</li>
+                                        <li>Verify Bootstrap CSS is loaded</li>
+                                        <li>Check browser console for errors</li>
+                                    </ul>
+                                </div>
+                                <pre><code>// Correct initialization
+document.addEventListener('DOMContentLoaded', function() {
+    azhSelect.init('.azh-select');
+});</code></pre>
+
+                                <h5>Styling Issues</h5>
+                                <div class="alert alert-warning">
+                                    <strong>Problem:</strong> Select doesn't match your theme or looks broken.
+                                </div>
+                                <div class="alert alert-success">
+                                    <strong>Solutions:</strong>
+                                    <ul class="mb-0">
+                                        <li>Ensure Bootstrap 5 CSS is loaded before azh-select CSS</li>
+                                        <li>Check CSS custom properties are supported</li>
+                                        <li>Verify <code>data-bs-theme</code> attribute is set correctly</li>
+                                        <li>Override CSS variables for custom styling</li>
+                                    </ul>
+                                </div>
+
+                                <h5>Remote API Not Working</h5>
+                                <div class="alert alert-warning">
+                                    <strong>Problem:</strong> Remote data doesn't load or search doesn't work.
+                                </div>
+                                <div class="alert alert-success">
+                                    <strong>Solutions:</strong>
+                                    <ul class="mb-0">
+                                        <li>Check API endpoint is accessible</li>
+                                        <li>Verify CORS headers are set on server</li>
+                                        <li>Ensure API returns JSON array format</li>
+                                        <li>Check field mapping with <code>data-value-field</code> and <code>data-label-field</code></li>
+                                    </ul>
+                                </div>
+                                <pre><code>// Debug remote issues
+document.querySelector('#remoteSelect').addEventListener('azh:error', function(e) {
+    console.error('API Error:', e.detail.error);
+});</code></pre>
+
+                                <h5>Events Not Firing</h5>
+                                <div class="alert alert-warning">
+                                    <strong>Problem:</strong> Custom event listeners don't trigger.
+                                </div>
+                                <div class="alert alert-success">
+                                    <strong>Solutions:</strong>
+                                    <ul class="mb-0">
+                                        <li>Add event listeners to the original select element</li>
+                                        <li>Use correct event names (prefixed with <code>azh:</code>)</li>
+                                        <li>Ensure listeners are added after initialization</li>
+                                    </ul>
+                                </div>
+                                <pre><code>// Correct event listener
+const select = document.querySelector('#mySelect');
+azhSelect.init(select);
+select.addEventListener('azh:change', function(e) {
+    console.log('Changed!');
+});</code></pre>
+                            </div>
+
+                            <div class="example-card">
+                                <h4>Debugging Tools</h4>
+
+                                <h5>Console Debugging</h5>
+                                <pre><code>// Get instance for debugging
+const instance = azhSelect.get('#mySelect');
+console.log('Instance:', instance);
+console.log('Options data:', instance.optionsData);
+console.log('Filtered options:', instance.filteredOptions);
+console.log('Is open:', instance.isOpen);
+
+// Check if select is initialized
+if (instance) {
+    console.log('Select is initialized');
+} else {
+    console.log('Select not found or not initialized');
+}</code></pre>
+
+                                <h5>Event Debugging</h5>
+                                <pre><code>// Log all events for debugging
+const events = ['change', 'clear', 'open', 'close', 'optionCreated', 'remoteLoaded', 'error'];
+events.forEach(event => {
+    document.querySelector('#mySelect').addEventListener(`azh:${event}`, function(e) {
+        console.log(`Event: ${event}`, e.detail);
+    });
+});</code></pre>
+
+                                <h5>Performance Monitoring</h5>
+                                <pre><code>// Monitor performance for large datasets
+const start = performance.now();
+azhSelect.init('.azh-select');
+const end = performance.now();
+console.log(`Initialization took ${end - start} milliseconds`);</code></pre>
+                            </div>
+
+                            <div class="example-card">
+                                <h4>Browser Compatibility</h4>
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th>Feature</th>
+                                            <th>Chrome</th>
+                                            <th>Firefox</th>
+                                            <th>Safari</th>
+                                            <th>Edge</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td>Basic functionality</td>
+                                            <td>60+</td>
+                                            <td>55+</td>
+                                            <td>12+</td>
+                                            <td>79+</td>
+                                        </tr>
+                                        <tr>
+                                            <td>CSS Custom Properties</td>
+                                            <td>49+</td>
+                                            <td>31+</td>
+                                            <td>9.1+</td>
+                                            <td>16+</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Fetch API</td>
+                                            <td>42+</td>
+                                            <td>39+</td>
+                                            <td>10.1+</td>
+                                            <td>14+</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Custom Events</td>
+                                            <td>15+</td>
+                                            <td>11+</td>
+                                            <td>6+</td>
+                                            <td>12+</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="example-card">
+                                <h4>Getting Help</h4>
+                                <ul>
+                                    <li><strong>GitHub Issues:</strong> Report bugs and request features</li>
+                                    <li><strong>Documentation:</strong> Check all examples and API reference</li>
+                                    <li><strong>Console Logs:</strong> Enable debugging to see what's happening</li>
+                                    <li><strong>Browser DevTools:</strong> Inspect DOM changes and network requests</li>
+                                </ul>
+
+                                <h5>Creating Bug Reports</h5>
+                                <p>When reporting issues, please include:</p>
+                                <ul>
+                                    <li>Browser and version</li>
+                                    <li>Bootstrap version</li>
+                                    <li>Minimal reproducible example</li>
+                                    <li>Console errors (if any)</li>
+                                    <li>Expected vs actual behavior</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6">
+                <h5>azh-select</h5>
+                <p class="text-muted-custom">Advanced select component for Bootstrap 5 with search, tags, remote API integration, and full dark mode support.</p>
+            </div>
+            <div class="col-md-3">
+                <h6>Features</h6>
+                <ul class="list-unstyled text-muted-custom">
+                    <li>Search & Filter</li>
+                    <li>Multiple Selection</li>
+                    <li>Tag Creation</li>
+                    <li>Remote API</li>
+                    <li>Custom Templates</li>
+                    <li>Dark Mode</li>
+                </ul>
+            </div>
+            <div class="col-md-3">
+                <h6>Resources</h6>
+                <ul class="list-unstyled">
+                    <li><a href="#" class="text-muted-custom">Documentation</a></li>
+                    <li><a data-bs-toggle="tab" href="#examples" class="text-muted-custom">Examples</a></li>
+                    <li><a href="#" class="text-muted-custom">GitHub</a></li>
+                    <li><a href="#" class="text-muted-custom">Issues</a></li>
+                </ul>
+            </div>
+        </div>
+        <hr class="border-custom">
+        <div class="text-center text-muted-custom">
+            <p>&copy; 2025 Ali Harb. Released under the MIT License.</p>
+        </div>
+    </div>
+</footer>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+<script src="dist/js/azh-select.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize all azh-select elements
+        azhSelect.init('.azh-select');
+
+        // Theme toggle functionality
+        const lightBtn = document.getElementById('lightTheme');
+        const darkBtn = document.getElementById('darkTheme');
+
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-bs-theme', theme);
+            localStorage.setItem('preferred-theme', theme);
+
+            // Update button states
+            lightBtn.classList.toggle('active', theme === 'light');
+            darkBtn.classList.toggle('active', theme === 'dark');
+        }
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem('preferred-theme') || 'light';
+        setTheme(savedTheme);
+
+        // Theme toggle event listeners
+        lightBtn.addEventListener('click', () => setTheme('light'));
+        darkBtn.addEventListener('click', () => setTheme('dark'));
+
+        // Global theme toggle function
+        window.toggleDocTheme = function() {
+            const current = document.documentElement.getAttribute('data-bs-theme');
+            setTheme(current === 'dark' ? 'light' : 'dark');
+        };
+
+        // Demo form validation
+        const demoForm = document.getElementById('demoForm');
+        if (demoForm) {
+            demoForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                if (!this.checkValidity()) {
+                    e.stopPropagation();
+                } else {
+                    alert('Form submitted successfully!');
+                }
+                this.classList.add('was-validated');
+            });
+        }
+
+        // Event demo logging
+        const eventDemo = document.getElementById('eventDemo');
+        const eventLog = document.getElementById('eventLog');
+
+        if (eventDemo && eventLog) {
+            const events = ['change', 'clear', 'open', 'close', 'optionCreated'];
+
+            events.forEach(eventType => {
+                eventDemo.addEventListener(`azh:${eventType}`, function(e) {
+                    const timestamp = new Date().toLocaleTimeString();
+                    const logEntry = document.createElement('div');
+                    logEntry.className = 'text-info mb-1';
+                    logEntry.innerHTML = `<strong>${timestamp}</strong> - Event: <code>azh:${eventType}</code>`;
+                    eventLog.appendChild(logEntry);
+                    eventLog.scrollTop = eventLog.scrollHeight;
+                });
+            });
+
+            // Clear the initial message when first event fires
+            let firstEvent = true;
+            eventDemo.addEventListener('azh:open', function() {
+                if (firstEvent) {
+                    eventLog.innerHTML = '';
+                    firstEvent = false;
+                }
+            });
+        }
+
+        // Initialize icon template
+        const iconTemplate = azhSelect.get('#iconTemplate');
+        if (iconTemplate) {
+            iconTemplate.options.templateOption = function(opt) {
+                const option = document.querySelector(`option[value="${opt.value}"]`);
+                const icon = option?.dataset.icon || 'bi-circle';
+                const color = option?.dataset.color || 'secondary';
+                return `<i class="bi ${icon} text-${color} me-2"></i>${opt.label}`;
+            };
+            iconTemplate.options.templateValue = function(opt) {
+                const option = document.querySelector(`option[value="${opt.value}"]`);
+                const color = option?.dataset.color || 'primary';
+                return `<span class="badge bg-${color}">${opt.label}</span>`;
+            };
+            iconTemplate._render();
+        }
+
+        // Initialize user template
+        const userTemplate = azhSelect.get('#userTemplate');
+        if (userTemplate) {
+            userTemplate.options.templateOption = function(opt) {
+                const option = document.querySelector(`option[value="${opt.value}"]`);
+                const avatar = option?.dataset.avatar || '';
+                const role = option?.dataset.role || '';
+                const email = option?.dataset.email || '';
+
+                return `
+                <div class="d-flex align-items-center py-1">
+                    <img src="${avatar}" class="rounded-circle me-3" width="32" height="32" alt="${opt.label}">
+                    <div>
+                        <div class="fw-semibold">${opt.label}</div>
+                        <small class="text-muted">${role} • ${email}</small>
+                    </div>
+                </div>
+            `;
+            };
+            userTemplate.options.templateValue = function(opt) {
+                return `<span class="badge bg-light text-dark me-1 mb-1">${opt.label}</span>`;
+            };
+            userTemplate._render();
+        }
+
+        // Smooth scrolling for internal links
+        document.addEventListener('click', function(e) {
+            if (e.target.matches('a[href^="#"]')) {
+                e.preventDefault();
+                const target = document.querySelector(e.target.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        });
+
+        console.log('azh-select documentation loaded successfully!');
+    });
+</script>
+</body>
+</html>

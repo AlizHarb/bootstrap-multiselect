@@ -1,0 +1,31 @@
+{
+  "name": "bootstrap-multiselect",
+  "description": "Bootstrap-styled multiselect dropdown with search, tags, remote data and themes.",
+  "main": [
+    "dist/js/azh-select.min.js",
+    "dist/css/azh-select.min.css"
+  ],
+  "authors": [
+    "Ali Harb"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "bootstrap",
+    "multiselect",
+    "dropdown",
+    "select",
+    "plugin"
+  ],
+  "homepage": "https://github.com/alizharb/bootstrap-multiselect",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "src"
+  ],
+  "dependencies": {
+    "bootstrap": ">=5.0.0"
+  }
+}

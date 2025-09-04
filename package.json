@@ -1,0 +1,40 @@
+{
+  "name": "@alizharb/bootstrap-multiselect",
+  "version": "1.0.0",
+  "description": "Bootstrap-styled multiselect dropdown with search, tags, remote data and themes.",
+  "main": "dist/js/azh-select.min.js",
+  "types": "types/index.d.ts",
+  "style": "dist/css/azh-select.min.css",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alizharb/bootstrap-multiselect.git"
+  },
+  "keywords": [
+    "bootstrap",
+    "multiselect",
+    "dropdown",
+    "select",
+    "plugin",
+    "tags",
+    "remote",
+    "custom-select"
+  ],
+  "author": "Ali Harb",
+  "license": "MIT",
+  "scripts": {
+    "build": "npm run build:less && npm run build:scss && npm run build:css && npm run build:js",
+    "build:js": "uglify-js src/js/azh-select.js -o dist/js/azh-select.min.js --compress --mangle && cp src/js/azh-select.js dist/js/azh-select.js",
+    "build:css": "cleancss -o dist/css/azh-select.min.css dist/css/azh-select.css",
+    "build:less": "lessc src/less/azh-select.less dist/css/azh-select.css && cp src/less/azh-select.less dist/less/azh-select.less",
+    "build:scss": "sass src/scss/azh-select.scss dist/css/azh-select.css --no-source-map && cp src/scss/azh-select.scss dist/scss/azh-select.scss"
+  },
+  "devDependencies": {
+    "uglify-js": "^3.17.4",
+    "clean-css-cli": "^5.6.2",
+    "less": "^4.2.0",
+    "sass": "^1.77.0"
+  },
+  "peerDependencies": {
+    "bootstrap": ">=5.0.0"
+  }
+}
