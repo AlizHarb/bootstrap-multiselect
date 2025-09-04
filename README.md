@@ -17,6 +17,10 @@ _Powerful, lightweight, and highly customizable select component with search, ta
 
 </div>
 
+## 📚 Demo & Full Documentation
+
+🔗 [Live Demo & Complete Documentation](https://alizharb.github.io/bootstrap-multiselect/)
+
 ---
 
 ## ✨ Features
@@ -62,7 +66,7 @@ _Powerful, lightweight, and highly customizable select component with search, ta
 <!-- CSS -->
 <link rel="stylesheet" href="path/to/dist/css/azh-select.min.css" />
 <!-- JavaScript -->
-<script src="path/to/azh-select.js"></script>
+<script src="path/to/dist/js/azh-select.min.js"></script>
 ```
 
 #### Option 2: CDN (Coming Soon)
