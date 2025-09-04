@@ -1,6 +1,6 @@
 {
   "name": "@alizharb/bootstrap-multiselect",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Bootstrap-styled multiselect dropdown with search, tags, remote data and themes.",
   "main": "dist/js/azh-select.min.js",
   "types": "types/index.d.ts",
