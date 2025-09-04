@@ -1,6 +1,6 @@
 {
   "name": "@alizharb/bootstrap-multiselect",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Bootstrap-styled multiselect dropdown with search, tags, remote data and themes.",
   "main": "dist/js/azh-select.min.js",
   "types": "types/index.d.ts",
@@ -29,12 +29,12 @@
     "build:scss": "sass src/scss/azh-select.scss dist/css/azh-select.css --no-source-map && cp src/scss/azh-select.scss dist/scss/azh-select.scss"
   },
   "devDependencies": {
-    "uglify-js": "^3.17.4",
     "clean-css-cli": "^5.6.2",
     "less": "^4.2.0",
-    "sass": "^1.77.0"
+    "sass": "^1.77.0",
+    "uglify-js": "^3.17.4"
   },
   "peerDependencies": {
     "bootstrap": ">=5.0.0"
-  }
+  },
 }
