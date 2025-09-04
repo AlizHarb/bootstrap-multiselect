@@ -29,12 +29,12 @@
     "build:scss": "sass src/scss/azh-select.scss dist/css/azh-select.css --no-source-map && cp src/scss/azh-select.scss dist/scss/azh-select.scss"
   },
   "devDependencies": {
+    "uglify-js": "^3.17.4",
     "clean-css-cli": "^5.6.2",
     "less": "^4.2.0",
-    "sass": "^1.77.0",
-    "uglify-js": "^3.17.4"
+    "sass": "^1.77.0"
   },
   "peerDependencies": {
     "bootstrap": ">=5.0.0"
-  },
+  }
 }
