@@ -80,7 +80,7 @@ _Powerful, lightweight, and highly customizable select component with search, ta
 #### Option 3: NPM (Coming Soon)
 
 ```bash
-npm install azh-select
+npm install @alizharb/bootstrap-multiselect
 ```
 
 ### Requirements
